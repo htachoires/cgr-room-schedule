@@ -1,0 +1,18 @@
+{
+  "name": "cgr-seances",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Find movies by rooms",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "scrap-villenave": "CINEMA_SLUG=villenave node src/index.js",
+    "scrap-lefrancais": "CINEMA_SLUG=lefrancais node src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.1.2",
+    "node-fetch": "^3.3.2"
+  }
+}
