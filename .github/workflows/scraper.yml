@@ -39,3 +39,11 @@ jobs:
           git add -f *.csv
           git commit -m "runner(${{ matrix.cinema }}): update CSV for (${DATE})" || echo "No changes to commit"
           git push origin "$BRANCH_NAME"
+      - name: Delete older cinema branches
+        run: |
+          # List remote branches for this cinema
+          git fetch --prune
+          for old_branch in $(git branch -r | grep "origin/${{ matrix.cinema }}-" | grep -v "$BRANCH_NAME" | sed 's|origin/||'); do
+            echo "Deleting old branch: $old_branch"
+            git push origin --delete "$old_branch"
+          done
