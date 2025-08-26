@@ -1,0 +1,41 @@
+name: Run CGR Scraper
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # every day at 12:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cinema: [lefrancais, villenave]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run scraper
+        run: CINEMA_SLUG=${{ matrix.cinema }} npm start
+
+      - name: Commit CSV results to branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          DATE=$(date -u +%F)
+          BRANCH_NAME="${{ matrix.cinema }}-${DATE}"
+          git checkout -b "$BRANCH_NAME"
+          git add -f *.csv
+          git commit -m "runner(${{ matrix.cinema }}): update CSV for (${DATE})" || echo "No changes to commit"
+          git push origin "$BRANCH_NAME"
