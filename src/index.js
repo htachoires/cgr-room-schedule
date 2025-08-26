@@ -155,7 +155,7 @@ async function main() {
         {headers: {Referer: RESERVER_URL, Accept: "text/html"}},
         jar
     );
-    const films = parseFilmsFromHTML(first.body || "");
+    const films = [parseFilmsFromHTML(first.body || "")[1]];
     if (!films.length) {
         console.error("No films found");
         process.exit(1);
